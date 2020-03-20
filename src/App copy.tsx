@@ -18,7 +18,7 @@ const DogShow: React.FC<{ data: IShowResult }> = ({ data }) => {
     <div>
       <h1> {data.status}</h1>
       <img src={data.message} alt="" />
-    </div>  
+    </div>
   )
 }
 // 全局的主题
@@ -39,6 +39,7 @@ export const ThemeContent = React.createContext(theme.light)
 
 function App() {
   //  hooks 只在最顶层调用hooks 只在函数中调用hook 或者在定义的hook中调用其他的hook
+
   const [show, setShow] = useState(false)
   // const position = useMouseHooks()
   const [toggle, setToggle] = useState(false)
