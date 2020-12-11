@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { ThemeContent } from '../App'
+import { ThemeContent } from '../Demo'
 
 
 const propTypes = {};

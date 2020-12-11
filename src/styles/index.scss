@@ -1,8 +1,11 @@
+// 导入的时候不需要加_ 其实是sass对模块化的一种支持  这些文件只能当作模块导入 不能单独使用
 @import 'variables';
 
+
+// layout
 @import 'reboot';
 //mixin
 @import '_mixin.scss';
 
 // button
-@import '../components/Button/style'
+@import '../components/Button/style';
