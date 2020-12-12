@@ -21,6 +21,8 @@ const App: React.FC = () => {
       <Button btnType="link" href="www.baidu.com" disabled>
         Link
       </Button>
+
+      <div>learn react</div>
     </div>
   );
 };
