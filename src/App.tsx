@@ -6,11 +6,11 @@ import MenuItem from './components/Menu/menuItem';
 const App: React.FC = () => {
   return (
     <div style={{padding:30}}>
-      <Menu defaultIndex={0} onSelect={(index) => alert(index)} mode='vertical'>
-        <MenuItem index={1}>1</MenuItem>
-        <MenuItem index={2} disabled>2</MenuItem>
-        <MenuItem index={3}>3</MenuItem>
-        <MenuItem index={4}>4</MenuItem>
+      <Menu defaultIndex='0' onSelect={(index) => alert(index)} mode='vertical'>
+        <MenuItem index='1'>1</MenuItem>
+        <MenuItem index='2' disabled>2</MenuItem>
+        <MenuItem index='3'>3</MenuItem>
+        <MenuItem index='4'>4</MenuItem>
       </Menu>
       <Button className="customer">普通按钮</Button>
       <Button disabled>disabled</Button>

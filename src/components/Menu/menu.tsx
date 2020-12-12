@@ -2,10 +2,10 @@ import React, { createContext, useState } from 'react';
 
 import classnames from 'classnames';
 
-type SelectCallback = (selectedIndex: number) => void;
+type SelectCallback = (selectedIndex: string) => void;
 type MenuMode = 'horizontal' | 'vertical';
 export interface MenuProps {
-  defaultIndex?: number;
+  defaultIndex?: string;
   className?: string;
   mode?: MenuMode;
   style?: React.CSSProperties;
@@ -13,11 +13,11 @@ export interface MenuProps {
 }
 
 interface IMenuContext {
-  index: number;
+  index: string;
   onSelect?: SelectCallback;
 }
 
-export const MenuContext = createContext<IMenuContext>({ index: 0 });
+export const MenuContext = createContext<IMenuContext>({ index: '0'});
 
 const Menu: React.FC<MenuProps> = (props) => {
   const { className, mode, style, children, defaultIndex, onSelect } = props;
@@ -25,9 +25,10 @@ const Menu: React.FC<MenuProps> = (props) => {
 
   const classes = classnames('viking-menu', className, {
     'menu-vertical': mode === 'vertical',
+    'menu-horizontal': mode !== 'vertical',
   });
 
-  const handleClick = (index: number) => {
+  const handleClick = (index: string) => {
     setActive(index);
     if (onSelect) {
       onSelect(index);
@@ -35,12 +36,12 @@ const Menu: React.FC<MenuProps> = (props) => {
   };
 
   const passedContext: IMenuContext = {
-    index: currentActive ? currentActive : 0,
+    index: currentActive ? currentActive : '0',
     onSelect: handleClick,
   };
 
   return (
-    <ul className={classes} style={style}>
+    <ul className={classes} style={style} data-testid = 'test-menu'>
       <MenuContext.Provider value={passedContext}>
         {children}
       </MenuContext.Provider>
@@ -49,7 +50,7 @@ const Menu: React.FC<MenuProps> = (props) => {
 };
 
 Menu.defaultProps = {
-  defaultIndex: 0,
+  defaultIndex: '0',
   mode: 'horizontal',
 };
 export default Menu;
