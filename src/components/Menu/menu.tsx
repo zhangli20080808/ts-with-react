@@ -12,17 +12,28 @@ export interface MenuProps {
   mode?: MenuMode;
   style?: React.CSSProperties;
   onSelect?: SelectCallback;
+  defaultOpenSubMenus?: string[];
 }
 
 interface IMenuContext {
   index: string;
   onSelect?: SelectCallback;
+  mode?: MenuMode;
+  defaultOpenSubMenus?: string[];
 }
 
 export const MenuContext = createContext<IMenuContext>({ index: "0" });
 
 const Menu: React.FC<MenuProps> = props => {
-  const { className, mode, style, children, defaultIndex, onSelect } = props;
+  const {
+    className,
+    mode,
+    style,
+    children,
+    defaultIndex,
+    onSelect,
+    defaultOpenSubMenus
+  } = props;
   const [currentActive, setActive] = useState(defaultIndex);
 
   const classes = classnames("viking-menu", className, {
@@ -39,7 +50,9 @@ const Menu: React.FC<MenuProps> = props => {
 
   const passedContext: IMenuContext = {
     index: currentActive ? currentActive : "0",
-    onSelect: handleClick
+    onSelect: handleClick,
+    mode,
+    defaultOpenSubMenus
   };
   const renderChildren = () => {
     return React.Children.map(children, (child, index) => {
@@ -50,7 +63,7 @@ const Menu: React.FC<MenuProps> = props => {
       // type 包含了 FunctionComponentElement 上面的各种属性
       const { displayName } = childElement.type;
       // 把某些属性混入进新的组件
-      if (displayName === "MenuItem") {
+      if (displayName === "MenuItem" || displayName === "SubMenu") {
         // return child
         return React.cloneElement(childElement, {
           index: index.toString()
@@ -71,6 +84,7 @@ const Menu: React.FC<MenuProps> = props => {
 
 Menu.defaultProps = {
   defaultIndex: "0",
-  mode: "horizontal"
+  mode: "horizontal",
+  defaultOpenSubMenus: []
 };
 export default Menu;
