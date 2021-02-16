@@ -1,0 +1,13 @@
+.carousel {
+  width: 500px;
+  height: 280px;
+  overflow: hidden;
+  white-space: nowrap;
+  .curImg {
+    display: inline-block;
+    width: 500px;
+    height: 280px;
+    background-size: contain;
+    transition: ease 0.5s; // 一般 ease 退出动画 ease-in 进入动画  ease-out
+  }
+}
