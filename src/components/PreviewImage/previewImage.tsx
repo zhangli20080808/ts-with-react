@@ -1,24 +1,21 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import PhotoPreview from "./index";
-import { PreviewImage, IToolProps } from "./types";
+import { PreviewImage } from "./types";
+
+const toolBarOptions = {
+  toSmall: true, // 缩小按钮
+  toBig: true, // 放大按钮
+  turnLeft: true, // 左转按钮
+  turnRight: true, // 右转按钮
+  close: true, // 关闭按钮
+  esc: true // esc键触发
+};
 
 const Index: FC<PreviewImage> = props => {
   const { imgGroup, index, tool } = props;
-
-  const [toolBar, setToolBar] = useState<IToolProps>({
-    toSmall: true, // 缩小按钮
-    toBig: true, // 放大按钮
-    turnLeft: true, // 左转按钮
-    turnRight: true, // 右转按钮
-    close: true, // 关闭按钮
-    esc: true // esc键触发
-  });
-
   const passIndex = (index !== null || true) && Number(index);
+  const toolBar = { ...toolBarOptions, ...tool };
 
-  useEffect(() => {
-    setToolBar({ ...toolBar, ...tool });
-  }, []);
   const renderContent = () => {
     if (Array.isArray(imgGroup)) {
       return (

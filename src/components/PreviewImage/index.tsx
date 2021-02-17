@@ -6,13 +6,17 @@ const Index: React.FC<PreviewImagesProps> = props => {
   // 合并工具栏
   console.log(props);
   const { tool, url } = props;
-  const [imgGroup, setImgGroup] = useState(props.imgGroup);
+  const [imgGroup, setImgGroup] = useState<PreviewImagesProps["imgGroup"]>(
+    props.imgGroup
+  );
   const [bigUrl, setBigUrl] = useState(props.bigUrl);
-  const [imgIndex, setImgIndex] = useState(props.imgIndex);
+  const [imgIndex, setImgIndex] = useState<PreviewImagesProps["imgIndex"]>(
+    props.imgIndex
+  );
   // loading元素显示隐藏
-  const [loadEl, setLoadEl] = useState(false);
+  const [loadEl, setLoadEl] = useState<boolean>(false);
   // 生成图片预览元素
-  const [figureEl, setFigureEl] = useState(false);
+  const [figureEl, setFigureEl] = useState<boolean>(false);
   // 当前大图默认宽高值
   const [imgOriginal, setImgOriginal] = useState({
     imgOriginalWidth: 0,
@@ -27,10 +31,9 @@ const Index: React.FC<PreviewImagesProps> = props => {
   });
   // 大图父级div元素样式
   const [imgParentStyle, setImgParentStyle] = useState<StyleObj>({});
-  const [rotateDeg, setRotateDeg] = useState(0); // 图片旋转角度
+  const [rotateDeg, setRotateDeg] = useState<number>(0); // 图片旋转角度
   const ppiRef = useRef(null);
   const bigImgRef = useRef(null);
-
   const iParentStyle = { ...imgParentStyle };
 
   /**
@@ -64,6 +67,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
     };
   };
 
+  // @ts-ignore
   /**
    * 图片放大事件，默认放大三倍,不能超过三倍
    */
@@ -113,7 +117,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
   /**
    * 重置图片
    */
-  const handleResetImg = () => {
+  const handleResetImg = useCallback(() => {
     const { imgOriginalHeight, imgOriginalWidth } = imgAttr;
     setImgParentStyle({
       ...imgParentStyle,
@@ -121,12 +125,12 @@ const Index: React.FC<PreviewImagesProps> = props => {
       height: `${imgOriginalHeight}px`,
       transform: `rotate(${0}deg)` // TODO
     });
-  };
+  }, [imgAttr, imgParentStyle]);
 
   /**
    * 左旋转事件
    */
-  const handleToTurnLeftEvent = () => {
+  const handleToTurnLeftEvent = useCallback(() => {
     if (!tool.turnLeft) return;
     const turnRotateDeg = rotateDeg - 90;
     setImgParentStyle({
@@ -134,12 +138,12 @@ const Index: React.FC<PreviewImagesProps> = props => {
       transform: `rotate(${turnRotateDeg}deg)`
     });
     setRotateDeg(turnRotateDeg);
-  };
+  }, [imgParentStyle, rotateDeg, tool.turnLeft]);
 
   /**
    * 右旋转事件
    */
-  const handleToTurnRightEvent = () => {
+  const handleToTurnRightEvent = useCallback(() => {
     if (!tool.turnLeft) return;
     const turnRotateDeg = rotateDeg + 90;
     setRotateDeg(turnRotateDeg);
@@ -147,7 +151,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
       ...imgParentStyle,
       transform: `rotate(${turnRotateDeg}deg)`
     });
-  };
+  }, []);
 
   /**
    * 上、下一张图片
@@ -181,9 +185,9 @@ const Index: React.FC<PreviewImagesProps> = props => {
     [imgGroup, imgIndex, loadEl]
   );
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setFigureEl(false);
-  };
+  }, []);
 
   useEffect(() => {
     /**
