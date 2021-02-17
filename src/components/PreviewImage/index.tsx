@@ -1,24 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import ReactDOM from "react-dom";
-import { IToolProps } from "./previewImage";
-
-interface PreviewImagesProps {
-  // 工具栏
-  tool: IToolProps;
-  // 当前图片索引
-  imgIndex?: number;
-  imgGroup: Array<string | object> | string | object;
-  bigUrl?: string;
-  url: string;
-  alt?: string;
-}
-
-interface ImgAttrProps {
-  src: string;
-  alt?: string;
-  imgOriginalHeight?: number;
-  imgOriginalWidth?: number;
-}
+import { PreviewImagesProps, ImgAttrProps, StyleObj } from "./types";
 
 const Index: React.FC<PreviewImagesProps> = props => {
   // 合并工具栏
@@ -44,7 +26,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
     imgOriginalHeight: 0
   });
   // 大图父级div元素样式
-  const [imgParentStyle, setImgParentStyle] = useState<any>({});
+  const [imgParentStyle, setImgParentStyle] = useState<StyleObj>({});
   const [rotateDeg, setRotateDeg] = useState(0); // 图片旋转角度
   const ppiRef = useRef(null);
   const bigImgRef = useRef(null);
@@ -85,7 +67,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
   /**
    * 图片放大事件，默认放大三倍,不能超过三倍
    */
-  const handleToBigEvent = () => {
+  const handleToBigEvent = useCallback(() => {
     if (!tool.toBig) return;
     let width = parseFloat(imgParentStyle.width) * 1.5;
     let height = parseFloat(imgParentStyle.height) * 1.5;
@@ -98,12 +80,17 @@ const Index: React.FC<PreviewImagesProps> = props => {
       width: `${width}px`,
       height: `${height}px`
     });
-  };
+  }, [
+    imgOriginal.imgOriginalHeight,
+    imgOriginal.imgOriginalWidth,
+    imgParentStyle,
+    tool.toBig
+  ]);
 
   /**
    * 图片缩小事件
    */
-  const handleToSmallEvent = () => {
+  const handleToSmallEvent = useCallback(() => {
     if (!tool.toSmall) return;
     let width = parseFloat(imgParentStyle.width) / 1.5;
     let height = parseFloat(imgParentStyle.height) / 1.5;
@@ -116,7 +103,12 @@ const Index: React.FC<PreviewImagesProps> = props => {
       width: `${width}px`,
       height: `${height}px`
     });
-  };
+  }, [
+    imgOriginal.imgOriginalHeight,
+    imgOriginal.imgOriginalWidth,
+    imgParentStyle,
+    tool.toSmall
+  ]);
 
   /**
    * 重置图片
@@ -160,31 +152,70 @@ const Index: React.FC<PreviewImagesProps> = props => {
   /**
    * 上、下一张图片
    */
-  const handlePrevNextEvent = (type: string) => {
-    if (loadEl) return;
-    if (!Array.isArray(imgGroup)) return;
-    const nowImgIndex =
-      type === "next" ? (imgIndex as number) + 1 : (imgIndex as number) - 1;
-    if (type === "next" && nowImgIndex > imgGroup.length - 1) {
-      return;
-    }
-    if (type === "prev" && nowImgIndex < 0) {
-      return;
-    }
-    let current;
-    if (typeof imgGroup[nowImgIndex] === "object") {
-      current = (imgGroup[nowImgIndex] as any).url;
-    } else {
-      current = imgGroup[nowImgIndex];
-    }
-    setImgIndex(nowImgIndex);
-    setRotateDeg(0);
-    setImgParentStyle({
-      width: "0px",
-      height: "0px"
-    });
-    handlePhotoShow(current, "");
+  const handlePrevNextEvent = useCallback(
+    (type: string) => {
+      if (loadEl) return;
+      if (!Array.isArray(imgGroup)) return;
+      const nowImgIndex =
+        type === "next" ? (imgIndex as number) + 1 : (imgIndex as number) - 1;
+      if (type === "next" && nowImgIndex > imgGroup.length - 1) {
+        return;
+      }
+      if (type === "prev" && nowImgIndex < 0) {
+        return;
+      }
+      let current;
+      if (typeof imgGroup[nowImgIndex] === "object") {
+        current = (imgGroup[nowImgIndex] as any).url;
+      } else {
+        current = imgGroup[nowImgIndex];
+      }
+      setImgIndex(nowImgIndex);
+      setRotateDeg(0);
+      setImgParentStyle({
+        width: "0px",
+        height: "0px"
+      });
+      handlePhotoShow(current, "");
+    },
+    [imgGroup, imgIndex, loadEl]
+  );
+
+  const handleClose = () => {
+    setFigureEl(false);
   };
+
+  useEffect(() => {
+    /**
+     * 键盘操作事件
+     * @param evt
+     */
+    const handleKeyDown = (evt: KeyboardEvent): void => {
+      if (figureEl) {
+        switch (evt.key) {
+          case "ArrowLeft":
+            handlePrevNextEvent("prev");
+            break;
+          case "ArrowRight":
+            handlePrevNextEvent("next");
+            break;
+          case "ArrowDown":
+            handleToSmallEvent();
+            break;
+          case "ArrowUp":
+            handleToBigEvent();
+            break;
+          case "Escape":
+            handleClose();
+            break;
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [figureEl, handlePrevNextEvent, handleToBigEvent, handleToSmallEvent]);
 
   return (
     <div className="photo-preview">
@@ -201,7 +232,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
       {figureEl &&
         ReactDOM.createPortal(
           <>
-            <figure className="photo-preview">
+            <div className="photo-preview">
               <div className="photo-preview__in" ref={ppiRef}>
                 {loadEl ? (
                   <div className="photo-preview__loading" />
@@ -276,18 +307,10 @@ const Index: React.FC<PreviewImagesProps> = props => {
                       </span>
                     </>
                   ) : null}
-                  {tool.close && (
-                    <span
-                      onClick={() => {
-                        setFigureEl(false);
-                      }}
-                    >
-                      关闭
-                    </span>
-                  )}
+                  {tool.close && <span onClick={handleClose}>关闭</span>}
                 </div>
               </div>
-            </figure>
+            </div>
           </>,
           document.body
         )}

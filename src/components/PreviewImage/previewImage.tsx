@@ -1,22 +1,8 @@
 import React, { FC, useEffect, useState } from "react";
 import PhotoPreview from "./index";
+import { PreviewImage, IToolProps } from "./types";
 
-interface PreviewImage {
-  imgGroup: Array<string | object> | string | object;
-  index?: string | number;
-  tool?: IToolProps;
-}
-
-export interface IToolProps {
-  toSmall: boolean; // 缩小按钮
-  toBig: boolean; // 放大按钮
-  turnLeft: boolean; // 左转按钮
-  turnRight: boolean; // 右转按钮
-  close: boolean; // 关闭按钮
-  esc: boolean; // esc键触发
-}
-
-const PreviewImage: FC<PreviewImage> = props => {
+const Index: FC<PreviewImage> = props => {
   const { imgGroup, index, tool } = props;
 
   const [toolBar, setToolBar] = useState<IToolProps>({
@@ -67,8 +53,8 @@ const PreviewImage: FC<PreviewImage> = props => {
   return <>{renderContent()}</>;
 };
 
-PreviewImage.defaultProps = {
+Index.defaultProps = {
   index: 0
 };
 
-export default PreviewImage;
+export default Index;
