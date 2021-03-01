@@ -151,7 +151,7 @@ const Index: React.FC<PreviewImagesProps> = props => {
       ...imgParentStyle,
       transform: `rotate(${turnRotateDeg}deg)`
     });
-  }, []);
+  }, [imgParentStyle, rotateDeg, tool.turnLeft]);
 
   /**
    * 上、下一张图片
