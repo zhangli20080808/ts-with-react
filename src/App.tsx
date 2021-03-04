@@ -15,6 +15,8 @@ import Transition from "./components/Transition/transition";
 import Icon from "./components/Icon/icon";
 import Carousel from "./components/Carousel/index";
 import PreviewImage from "./components/PreviewImage/previewImage";
+import IdSelect from "./components/IdSelect/idSelect";
+import { log } from "util";
 
 library.add(fas); // 把图标添加进仓库
 //
@@ -25,11 +27,22 @@ const images = [
   "https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg"
 ];
 
+interface IProps {
+  num: number;
+}
+
 const App: React.FC = () => {
   const [show, setShow] = useState(false);
+  const [data, setData] = useState({ num: 0 });
   return (
     <div style={{ padding: 30 }}>
-      <PreviewImage imgGroup={images} />
+      <IdSelect
+        options={[{ label: "123", value: 123 }]}
+        value={data.num}
+        defaultOptionName="123123"
+        onChange={value => setData({ ...data, num: value })}
+      />
+      {/*<PreviewImage imgGroup={images} />*/}
       {/*<Carousel src={images} />*/}
       {/*<Icon icon="arrow-down" size="4x" theme="danger" />*/}
       {/*<Menu*/}

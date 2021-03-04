@@ -1,10 +1,13 @@
 import React from "react";
+import {Select} from "antd";
 
-type SelectProps = React.ComponentProps<typeof Select>
+type SelectProps = React.ComponentProps<typeof Select>;
 
-interface IdSelectProps extends Omit<SelectProps, 'value' | 'onChange' | 'defaultOptionName' | 'options'> {
+interface IdSelectProps
+    extends Omit<SelectProps,
+        "value" | "onChange" | "defaultOptionName" | "options"> {
     value: string | number | undefined | null;
-    onChange: (value?: number) => void;
+    onChange?: (value?: number) => void;
     defaultOptionName?: string;
     options?: { value: number; label: string }[];
 }
@@ -17,21 +20,29 @@ interface IdSelectProps extends Omit<SelectProps, 'value' | 'onChange' | 'defaul
  * @param props
  * @constructor
  */
-export const IdSelect = (props: IdSelectProps) => {
+const IdSelect = (props: IdSelectProps) => {
     const {value, onChange, defaultOptionName, options, ...restProps} = props;
     return (
         <Select
             value={toNumber(value)}
-            onChange={value => onChange(toNumber(value) || undefined)}
+            onChange={(value: any) => {
+                if (onChange) {
+                    onChange(toNumber(value) || undefined)
+                }
+            }}
             {...restProps}
         >
-            {defaultOptionName ? <Select.Option value={0}>{defaultOptionName}</Select.Option>}
-            {
-                options?.map(option => <Select.Option key={option.value}
-                                                      value={option.value}>{option.label}</Select.Option>)
-            }
+            {defaultOptionName ? (
+                <Select.Option value={0}>{defaultOptionName}</Select.Option>
+            ) : null}
+            {options?.map(option => (
+                <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                </Select.Option>
+            ))}
         </Select>
     );
 };
 
 const toNumber = (value: unknown) => (isNaN(Number(value)) ? 0 : Number(value));
+export default IdSelect;
