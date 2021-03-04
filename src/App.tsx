@@ -40,7 +40,7 @@ const App: React.FC = () => {
         options={[{ label: "123", value: 123 }]}
         value={data.num}
         defaultOptionName="123123"
-        onChange={value => setData({ ...data, num: value })}
+        // onChange={value => setData({ ...data, num: value })}
       />
       {/*<PreviewImage imgGroup={images} />*/}
       {/*<Carousel src={images} />*/}
