@@ -2,16 +2,16 @@ import React, {
   CSSProperties,
   FC,
   InputHTMLAttributes,
-  ReactElement,
-} from 'react';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import classNames from 'classnames';
-import Icon from '../Icon/icon';
+  ReactElement
+} from "react";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import classNames from "classnames";
+import Icon from "../Icon/icon";
 
-type InputSize = 'lg' | 'sm';
+type InputSize = "lg" | "sm";
 
 export interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLElement>, 'size'> {
+  extends Omit<InputHTMLAttributes<HTMLElement>, "size"> {
   disabled?: boolean;
   size?: InputSize;
   icon?: IconProp;
@@ -20,16 +20,16 @@ export interface InputProps
   append?: string | ReactElement;
 }
 
-export const Input: FC<InputProps> = (props) => {
+export const Input: FC<InputProps> = props => {
   const { disabled, size, icon, prepend, append, style, ...restProps } = props;
   // 取出各种属性
   // 根据属性计算不同的className
-  const cNames = classNames('viking-input-wrapper', {
+  const cNames = classNames("viking-input-wrapper", {
     [`input-size-${size}`]: size,
-    'is-disabled': disabled,
-    'input-group': prepend || append,
-    'input-group-append': !!append,
-    'input-group-prepend': !!prepend,
+    "is-disabled": disabled,
+    "input-group": prepend || append,
+    "input-group-append": !!append,
+    "input-group-prepend": !!prepend
   });
   // 根据属性判断是否要添加特定的节点
   return (

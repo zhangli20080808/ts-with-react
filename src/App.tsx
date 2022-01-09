@@ -13,23 +13,10 @@ import SubMenu from "./components/Menu/subMenu";
 import Transition from "./components/Transition/transition";
 
 import Icon from "./components/Icon/icon";
-import Carousel from "./components/Carousel/index";
-import PreviewImage from "./components/PreviewImage/previewImage";
 import IdSelect from "./components/IdSelect/idSelect";
-import { log } from "util";
 
 library.add(fas); // 把图标添加进仓库
-//
-const images = [
-  "https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg",
-  "https://static001.geekbang.org/resource/image/1b/21/1b809d9a2bdf3ecc481322d7c9223c21.jpg",
-  "https://static001.geekbang.org/resource/image/b6/4f/b6d65b2f12646a9fd6b8cb2b020d754f.jpg",
-  "https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg"
-];
 
-interface IProps {
-  num: number;
-}
 
 const App: React.FC = () => {
   const [show, setShow] = useState(false);
