@@ -11,12 +11,12 @@ export interface MenuItemProps {
   disabled?: boolean;
 }
 
-const MenuItem: React.FC<MenuItemProps> = props => {
+const MenuItem: React.FC<MenuItemProps> = (props) => {
   const { index, disabled, className, style, children } = props;
   const context = useContext(MenuContext);
   const classes = classnames("menu-item", className, {
     "is-disabled": disabled,
-    "is-active": context.index === index
+    "is-active": context.index === index,
   });
   const handleClick = () => {
     if (context.onSelect && !disabled && typeof index === "string") {

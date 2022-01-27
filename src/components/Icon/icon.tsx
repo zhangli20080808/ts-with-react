@@ -3,6 +3,7 @@
 // 3. fontIcon 会遇到各种奇怪的bug
 
 // 安装 https://www.npmjs.com/package/react-fontawesome
+// https://fontawesome.com/v5.15/icons?d=gallery&p=2&q=file
 import React from "react";
 import classNames from "classnames";
 import {

@@ -2,7 +2,7 @@ import React, {
   CSSProperties,
   FC,
   InputHTMLAttributes,
-  ReactElement
+  ReactElement,
 } from "react";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
@@ -20,7 +20,7 @@ export interface InputProps
   append?: string | ReactElement;
 }
 
-export const Input: FC<InputProps> = props => {
+export const Input: FC<InputProps> = (props) => {
   const { disabled, size, icon, prepend, append, style, ...restProps } = props;
   // 取出各种属性
   // 根据属性计算不同的className
@@ -29,7 +29,7 @@ export const Input: FC<InputProps> = props => {
     "is-disabled": disabled,
     "input-group": prepend || append,
     "input-group-append": !!append,
-    "input-group-prepend": !!prepend
+    "input-group-prepend": !!prepend,
   });
   // 根据属性判断是否要添加特定的节点
   return (

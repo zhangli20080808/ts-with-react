@@ -24,7 +24,7 @@ interface IMenuContext {
 
 export const MenuContext = createContext<IMenuContext>({ index: "0" });
 
-const Menu: React.FC<MenuProps> = props => {
+const Menu: React.FC<MenuProps> = (props) => {
   const {
     className,
     mode,
@@ -32,13 +32,13 @@ const Menu: React.FC<MenuProps> = props => {
     children,
     defaultIndex,
     onSelect,
-    defaultOpenSubMenus
+    defaultOpenSubMenus,
   } = props;
   const [currentActive, setActive] = useState(defaultIndex);
 
   const classes = classnames("viking-menu", className, {
     "menu-vertical": mode === "vertical",
-    "menu-horizontal": mode !== "vertical"
+    "menu-horizontal": mode !== "vertical",
   });
 
   const handleClick = (index: string) => {
@@ -52,21 +52,19 @@ const Menu: React.FC<MenuProps> = props => {
     index: currentActive ? currentActive : "0",
     onSelect: handleClick,
     mode,
-    defaultOpenSubMenus
+    defaultOpenSubMenus,
   };
   const renderChildren = () => {
     return React.Children.map(children, (child, index) => {
       //  我们类型断言 将他转成 funcComp的实例
-      const childElement = child as React.FunctionComponentElement<
-        MenuItemProps
-      >;
+      const childElement = child as React.FunctionComponentElement<MenuItemProps>;
       // type 包含了 FunctionComponentElement 上面的各种属性
       const { displayName } = childElement.type;
       // 把某些属性混入进新的组件
       if (displayName === "MenuItem" || displayName === "SubMenu") {
         // return child
         return React.cloneElement(childElement, {
-          index: index.toString()
+          index: index.toString(),
         });
       } else {
         console.error("Warning：Menu has a child which is not a MenuItem");
@@ -85,6 +83,6 @@ const Menu: React.FC<MenuProps> = props => {
 Menu.defaultProps = {
   defaultIndex: "0",
   mode: "horizontal",
-  defaultOpenSubMenus: []
+  defaultOpenSubMenus: [],
 };
 export default Menu;

@@ -15,7 +15,7 @@ const SubMenu: React.FC<SubMenuProps> = ({
   index,
   className,
   title,
-  children
+  children,
 }) => {
   const context = useContext(MenuContext);
   const openSubMenus = context.defaultOpenSubMenus as Array<string>;
@@ -25,7 +25,7 @@ const SubMenu: React.FC<SubMenuProps> = ({
   const classes = classNames("menu-item submenu-item", className, {
     "is-active": context.index === index,
     "is-opened": menuOpen,
-    "is-vertical": context.mode === "vertical"
+    "is-vertical": context.mode === "vertical",
   });
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,21 +50,19 @@ const SubMenu: React.FC<SubMenuProps> = ({
           },
           onMouseLeave: (e: React.MouseEvent) => {
             handleMouse(e, false);
-          }
+          },
         }
       : {};
   const renderChildren = () => {
     const subMenuClass = classNames("viking-submenu", {
-      "menu-opened": menuOpen
+      "menu-opened": menuOpen,
     });
     const childrenComponent = React.Children.map(children, (child, index1) => {
-      const childElement = child as React.FunctionComponentElement<
-        SubMenuProps
-      >;
+      const childElement = child as React.FunctionComponentElement<SubMenuProps>;
       const { displayName } = childElement.type;
       if (displayName === "MenuItem") {
         return React.cloneElement(childElement, {
-          index: `${index}-${index1}`
+          index: `${index}-${index1}`,
         });
       } else {
         console.error("Warning：Menu has a child which is not a MenuItem");

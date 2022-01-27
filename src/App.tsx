@@ -14,6 +14,7 @@ import Transition from "./components/Transition/transition";
 
 import Icon from "./components/Icon/icon";
 import IdSelect from "./components/IdSelect/idSelect";
+import Tree from './components/Tree/index';
 
 library.add(fas); // 把图标添加进仓库
 
@@ -23,12 +24,13 @@ const App: React.FC = () => {
   const [data, setData] = useState({ num: 0 });
   return (
     <div style={{ padding: 30 }}>
-      <IdSelect
+      <Tree/>
+      {/* <IdSelect
         options={[{ label: "123", value: 123 }]}
         value={data.num}
         defaultOptionName="123123"
         // onChange={value => setData({ ...data, num: value })}
-      />
+      /> */}
       {/*<PreviewImage imgGroup={images} />*/}
       {/*<Carousel src={images} />*/}
       {/*<Icon icon="arrow-down" size="4x" theme="danger" />*/}

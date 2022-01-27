@@ -28,14 +28,14 @@ export interface UploadProps {
   onRemove?: (file: UploadFile) => void;
 }
 
-export const Upload: FC<UploadProps> = props => {
+export const Upload: FC<UploadProps> = (props) => {
   const {
     action,
     beforeUpload,
     onProgress,
     onSuccess,
     onError,
-    onChange
+    onChange,
   } = props;
   const fileInput = useRef<HTMLInputElement>(null);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -48,8 +48,8 @@ export const Upload: FC<UploadProps> = props => {
     updateFile: UploadFile,
     updateObj: Partial<UploadFile>
   ) => {
-    setFileList(prevList => {
-      return prevList.map(file => {
+    setFileList((prevList) => {
+      return prevList.map((file) => {
         if (file.uid === updateFile.uid) {
           return { ...file, ...updateObj };
         }
@@ -73,7 +73,7 @@ export const Upload: FC<UploadProps> = props => {
       name: file.name,
       size: file.size,
       percent: 0,
-      raw: file
+      raw: file,
     };
     setFileList([curFile, ...fileList]);
     const formData = new FormData();
@@ -81,9 +81,9 @@ export const Upload: FC<UploadProps> = props => {
     axios
       .post(action, formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "multipart/form-data",
         },
-        onUploadProgress: e => {
+        onUploadProgress: (e) => {
           // 四舍五入向上取整
           const percentage = Math.round((e.loaded * 100) / e.total) || 0;
           if (percentage < 100) {
@@ -91,26 +91,26 @@ export const Upload: FC<UploadProps> = props => {
               // 拿到上次更新的 fileList
               uploadFileList(curFile, {
                 percent: percentage,
-                status: "uploading"
+                status: "uploading",
               });
               onProgress(percentage, file);
             }
           }
-        }
+        },
       })
-      .then(res => {
+      .then((res) => {
         uploadFileList(curFile, {
           status: "success",
-          response: res.data
+          response: res.data,
         });
         if (onSuccess) {
           onSuccess(res.data, file);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         uploadFileList(curFile, {
           status: "error",
-          error: err
+          error: err,
         });
         if (onError) {
           onError(err, file);
@@ -125,13 +125,13 @@ export const Upload: FC<UploadProps> = props => {
 
   const uploadFiles = (files: FileList) => {
     const postFiles = Array.from(files);
-    postFiles.forEach(file => {
+    postFiles.forEach((file) => {
       if (!beforeUpload) {
         post(file);
       } else {
         const result = beforeUpload(file);
         if (result && result instanceof Promise) {
-          result.then(processedFile => {
+          result.then((processedFile) => {
             post(processedFile);
           });
         } else if (result) {
