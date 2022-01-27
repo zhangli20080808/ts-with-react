@@ -39,15 +39,42 @@ export default class Tree extends Component<Props, State> {
   };
   // 将对应key 对象的 collapsed 取反
   onCollapse = (key: string) => {
-    const data = this.keyNodeMap[key];
+    let data = this.keyNodeMap[key];
     if (data) {
-      data.collapsed = !data.collapsed;
-      data.children = data.children || [];
-      this.setState({ data: this.state.data });
+      let { children } = data;
+      if (children) {
+        data.collapsed = !data.collapsed;
+        data.children = data.children || [];
+        this.setState({ data: this.state.data });
+      } else {
+        // children 不存在，则说明儿子未加载，需要加载
+        data.loading = true;
+        this.setState({ data: this.state.data });
+        setTimeout(() => {
+          data.children = [
+            {
+              name: `${data.name}的儿子1`,
+              key: `${data.key}-1`,
+              type: "folder",
+              collapsed: true,
+            },
+            {
+              name: `${data.name}的儿子2`,
+              key: `${data.key}-2`,
+              type: "folder",
+              collapsed: true,
+            },
+          ];
+          data.loading = false;
+          data.collapsed = false;
+          this.buildKeyMap();
+          this.setState({ data: this.state.data });
+        }, 2000);
+      }
     }
   };
   onCheck = (key: string) => {
-    const data = this.keyNodeMap[key];
+    let data = this.keyNodeMap[key];
     if (data) {
       data.checked = !data.checked;
       if (data.checked) {

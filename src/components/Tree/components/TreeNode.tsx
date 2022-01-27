@@ -3,10 +3,13 @@ import { Checkbox } from "antd";
 import Icon from "../../Icon/icon";
 import { TreeData } from "../typings";
 
+interface Collapse {
+  (key: string): void;
+}
 interface Props {
   data: TreeData;
-  onCollapse: any;
-  onCheck: any;
+  onCollapse: Collapse;
+  onCheck: Collapse;
 }
 export default class TreeNode extends Component<Props> {
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
@@ -15,7 +18,7 @@ export default class TreeNode extends Component<Props> {
   }
   render() {
     const {
-      data: { name, children, key, collapsed, checked },
+      data: { name, children, key, collapsed, checked, loading },
       onCheck,
       onCollapse,
     } = this.props;
@@ -53,7 +56,14 @@ export default class TreeNode extends Component<Props> {
       }
     } else {
       // 没有children属性 小图标向右，icon未打开
-      caret = (
+      caret = loading ? (
+        <Icon
+          onClick={() => onCollapse(key)}
+          icon="spinner"
+          //   size="2x"
+          //   theme="dark"
+        />
+      ) : (
         <Icon
           onClick={() => onCollapse(key)}
           icon="caret-right"
