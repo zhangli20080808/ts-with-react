@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { Checkbox } from "antd";
 import Icon from "../../Icon/icon";
 import { TreeData } from "../typings";
 
 interface Props {
   data: TreeData;
   onCollapse: any;
+  onCheck: any;
 }
 export default class TreeNode extends Component<Props> {
   // eslint-disable-next-line @typescript-eslint/no-useless-constructor
@@ -13,7 +15,8 @@ export default class TreeNode extends Component<Props> {
   }
   render() {
     const {
-      data: { name, children, key, collapsed },
+      data: { name, children, key, collapsed, checked },
+      onCheck,
       onCollapse,
     } = this.props;
     // <Icon icon="arrow-down" size="4x" theme="dark" />
@@ -72,13 +75,23 @@ export default class TreeNode extends Component<Props> {
         <div className="inner">
           <span className="content">
             {caret}
+            <Checkbox
+              style={{ margin: "0 6px" }}
+              checked={checked}
+              onChange={(e) => onCheck(key)}
+            />
             <span className="icon">{icon}</span>
             {name}
           </span>
           {children && children.length > 0 && !collapsed && (
             <div className="children">
               {children.map((item) => (
-                <TreeNode data={item} key={item.key} onCollapse={onCollapse} />
+                <TreeNode
+                  data={item}
+                  key={item.key}
+                  onCollapse={onCollapse}
+                  onCheck={onCheck}
+                />
               ))}
             </div>
           )}

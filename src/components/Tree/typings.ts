@@ -4,5 +4,6 @@ export interface TreeData {
   type: string;
   collapsed: boolean;
   children?: TreeData[];
-  parent?: TreeData
+  parent?: TreeData;
+  checked?: boolean;
 }

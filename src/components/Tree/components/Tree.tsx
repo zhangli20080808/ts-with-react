@@ -46,15 +46,47 @@ export default class Tree extends Component<Props, State> {
       this.setState({ data: this.state.data });
     }
   };
+  onCheck = (key: string) => {
+    const data = this.keyNodeMap[key];
+    if (data) {
+      data.checked = !data.checked;
+      if (data.checked) {
+        //如果新状态为true
+        // 处理儿子
+        this.checkAllChildren(data.children, true);
+        // 如果一个节点，它所有子节点都被选中了，自己也要被选中
+        this.checkParent(data.parent);
+      } else {
+        // 让所有下级节点取消选中
+        this.checkAllChildren(data.children, false);
+        this.checkParent(data.parent);
+      }
+      this.setState({ data: this.state.data });
+    }
+  };
+  checkAllChildren = (children: TreeData[] = [], checked: boolean) => {
+    children.forEach((item: TreeData) => {
+      item.checked = checked;
+      this.checkAllChildren(item.children, checked);
+    });
+  };
+  // 如果当前父亲他的所有儿子都被选中了，自己也被选中
+  checkParent = (parent?: TreeData) => {
+    while (parent) {
+      parent.checked = parent.children?.every((item: TreeData) => item.checked);
+      parent = parent.parent;
+    }
+  };
   render() {
-    const {
-      data: { name },
-    } = this.props;
-
+    const { data } = this.props;
     return (
       <div className="tree">
         <div className="tree-nodes">
-          <TreeNode data={data} onCollapse={this.onCollapse} />
+          <TreeNode
+            data={data}
+            onCollapse={this.onCollapse}
+            onCheck={this.onCheck}
+          />
         </div>
       </div>
     );

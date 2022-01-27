@@ -31,7 +31,7 @@ const data: TreeData = {
     {
       name: "儿子2",
       key: "1-2",
-      collapsed: false,
+      collapsed: true,
       type: "folder",
     },
   ],
