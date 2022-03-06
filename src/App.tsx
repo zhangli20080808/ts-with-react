@@ -14,17 +14,25 @@ import Transition from "./components/Transition/transition";
 
 import Icon from "./components/Icon/icon";
 import IdSelect from "./components/IdSelect/idSelect";
-import Tree from './components/Tree/index';
+import Upload2 from "./components/upload2";
+import { Upload } from "./components/Upload/upload";
+import Tree from "./components/Tree/index";
 
 library.add(fas); // 把图标添加进仓库
-
 
 const App: React.FC = () => {
   const [show, setShow] = useState(false);
   const [data, setData] = useState({ num: 0 });
   return (
     <div style={{ padding: 30 }}>
-      <Tree/>
+      <Upload
+        defaultFileList={[]}
+        action=""
+        onChange={(file) => {
+          console.log(file, "1");
+        }}
+      />
+      {/* <Tree/> */}
       {/* <IdSelect
         options={[{ label: "123", value: 123 }]}
         value={data.num}
@@ -33,7 +41,7 @@ const App: React.FC = () => {
       /> */}
       {/*<PreviewImage imgGroup={images} />*/}
       {/*<Carousel src={images} />*/}
-      {/*<Icon icon="arrow-down" size="4x" theme="danger" />*/}
+      <Icon icon="arrow-down" size="4x" theme="danger" />
       {/*<Menu*/}
       {/*  defaultIndex="0"*/}
       {/*  onSelect={index => alert(index)}*/}

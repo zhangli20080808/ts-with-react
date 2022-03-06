@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FC, useRef, useState } from "react";
 import { Button } from "../Button/button";
 import axios from "axios";
+import UploadList from "./uploadList";
 
 export type UploadFileStatus = "ready" | "uploading" | "success" | "error";
 
@@ -19,12 +20,14 @@ export interface UploadFile {
 export interface UploadProps {
   // 后续 File 类型 替换成 UploadFile ，因为信息更具体
   action: string;
+  // 默认显示组件已经上传过的图片信息
   defaultFileList: UploadFile[];
   beforeUpload?: (file: File) => boolean | Promise<File>;
   onProgress?: (percentage: number, file: File) => void;
   onSuccess?: (data: any, file: File) => void;
   onError?: (err: any, file: File) => void;
   onChange?: (file: File) => void;
+  // 从当前列表中删除文件
   onRemove?: (file: UploadFile) => void;
 }
 
@@ -36,9 +39,11 @@ export const Upload: FC<UploadProps> = (props) => {
     onSuccess,
     onError,
     onChange,
+    defaultFileList = [],
+    onRemove,
   } = props;
   const fileInput = useRef<HTMLInputElement>(null);
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
   /**
    *
    * @param updateFile 当前需要更新的文件
@@ -145,8 +150,18 @@ export const Upload: FC<UploadProps> = (props) => {
     const { files } = e.target;
     if (!files) return;
     uploadFiles(files);
+    // 上传结束，清空值
     if (fileInput.current) {
       fileInput.current.value = "";
+    }
+  };
+
+  const handleRemove = (file: UploadFile) => {
+    setFileList((prevList) => {
+      return prevList.filter((item) => item.uid !== file.uid);
+    });
+    if (onRemove) {
+      onRemove(file);
     }
   };
 
@@ -166,6 +181,7 @@ export const Upload: FC<UploadProps> = (props) => {
   //   const newFile = new File([file], "new_name.docx", { type: file.type });
   //   return Promise.resolve(newFile);
   // };
+  console.log(fileList);
   return (
     <div className="viking-upload-component">
       <Button btnType="primary" onClick={handleClick}>
@@ -177,6 +193,7 @@ export const Upload: FC<UploadProps> = (props) => {
         ref={fileInput}
         onChange={handleFileChange}
       />
+      <UploadList onRemove={handleRemove} fileList={fileList} />
     </div>
   );
 };
