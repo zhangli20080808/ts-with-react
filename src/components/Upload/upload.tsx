@@ -1,8 +1,26 @@
-import React, { ChangeEvent, FC, useRef, useState } from "react";
-import { Button } from "../Button/button";
+import React, {
+  ChangeEvent,
+  FC,
+  useRef,
+  useState,
+  PropsWithChildren,
+} from "react";
+// import { Button } from "../Button/button";
 import axios from "axios";
 import UploadList from "./uploadList";
+import Dragger from "./Dragger";
 
+/**
+ * 组件基础上传功能完成之后，可以添加 丰富化的数据上传
+ * 1. 添加自定义的header
+ * 2. 添加name 属性 - 代表发到后台的文件参数名称
+ * 3. 添加data 属性 - 上传所需的额外参数
+ * 4. 添加input 本身的file的一些约束属性 - multiple accept 等
+ *
+ * 自定义触发元素
+ * 支持拖动上传
+ * 点击上传文件名称，添加 onPreview 事件，让用户自行去操作一些行为
+ */
 export type UploadFileStatus = "ready" | "uploading" | "success" | "error";
 
 export interface UploadFile {
@@ -29,9 +47,20 @@ export interface UploadProps {
   onChange?: (file: File) => void;
   // 从当前列表中删除文件
   onRemove?: (file: UploadFile) => void;
+
+  // 添加自定义headers
+  headers?: { [key: string]: any };
+  name?: string;
+  data?: { [key: string]: any };
+  // 是否携带cookie 默认false
+  withCredentials?: false;
+  accept?: string;
+  multiple?: boolean;
+  // 是否支持拖动
+  drag?: boolean;
 }
 
-export const Upload: FC<UploadProps> = (props) => {
+const Upload: FC<PropsWithChildren<UploadProps>> = (props) => {
   const {
     action,
     beforeUpload,
@@ -41,6 +70,14 @@ export const Upload: FC<UploadProps> = (props) => {
     onChange,
     defaultFileList = [],
     onRemove,
+    name,
+    withCredentials,
+    data,
+    headers,
+    accept,
+    multiple,
+    drag,
+    children,
   } = props;
   const fileInput = useRef<HTMLInputElement>(null);
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
@@ -80,14 +117,24 @@ export const Upload: FC<UploadProps> = (props) => {
       percent: 0,
       raw: file,
     };
-    setFileList([curFile, ...fileList]);
+    // setFileList([curFile, ...fileList]);
+    setFileList((prevList) => {
+      return [curFile, ...prevList];
+    });
     const formData = new FormData();
-    formData.append(file.name, file);
+    formData.append(name || "file", file);
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+    }
     axios
       .post(action, formData, {
         headers: {
+          ...headers,
           "Content-Type": "multipart/form-data",
         },
+        withCredentials,
         onUploadProgress: (e) => {
           // 四舍五入向上取整
           const percentage = Math.round((e.loaded * 100) / e.total) || 0;
@@ -184,16 +231,38 @@ export const Upload: FC<UploadProps> = (props) => {
   console.log(fileList);
   return (
     <div className="viking-upload-component">
-      <Button btnType="primary" onClick={handleClick}>
-        Upload File
-      </Button>
-      <input
-        type="file"
-        style={{ display: "none" }}
-        ref={fileInput}
-        onChange={handleFileChange}
-      />
-      <UploadList onRemove={handleRemove} fileList={fileList} />
+      <div
+        className="viking-upload-input"
+        style={{ display: "inline-block" }}
+        onClick={handleClick}
+      >
+        {drag ? (
+          <Dragger
+          onFile={(files) => {
+            uploadFiles(files);
+          }}
+          >
+            {children}
+          </Dragger>
+        ) : (
+          children
+        )}
+        <input
+          className="viking-file-input"
+          style={{ display: "none" }}
+          ref={fileInput}
+          onChange={handleFileChange}
+          type="file"
+          accept={accept}
+          multiple={multiple}
+        />
+      </div>
+
+      <UploadList fileList={fileList} onRemove={handleRemove} />
     </div>
   );
 };
+Upload.defaultProps = {
+  name: "file",
+};
+export default Upload;

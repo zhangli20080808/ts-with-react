@@ -4,7 +4,7 @@ import { library } from "@fortawesome/fontawesome-svg-core"; // 导入图标仓�
 import { fas } from "@fortawesome/free-solid-svg-icons"; // 全部图标
 
 import { action } from "@storybook/addon-actions";
-import { Upload, UploadFile } from "./upload";
+import Upload, { UploadFile } from "./upload";
 //import Button from '../Button/button'
 import Icon from "../Icon/icon";
 library.add(fas); // 把图标添加进仓库
@@ -38,11 +38,18 @@ const SimpleUpload = () => {
       onChange={action("changed")}
       onRemove={action("removed")}
       defaultFileList={defaultFileList}
-      // name="fileName"
+      name="fileName"
+      headers={{
+        x: "123",
+      }}
+      data={{
+        key: "value",
+      }}
+      accept='.jpg'
       // multiple
-      // drag
+      drag
     >
-      <Icon icon="upload" size="5x" theme="secondary" />
+      <Icon icon="upload" size="4x" theme="secondary" />
       <br />
       <p>Drag file over to upload</p>
     </Upload>
