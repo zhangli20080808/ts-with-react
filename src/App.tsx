@@ -17,7 +17,8 @@ import IdSelect from "./components/IdSelect/idSelect";
 import Upload2 from "./components/upload2";
 // import { Upload } from "./components/Upload/upload";
 import Tree from "./components/Tree/index";
-import Demo from './components/demo/index'
+import Demo from './components/demo/components/Category'
+import Demo2 from './components/demo/index'
 library.add(fas); // 把图标添加进仓库
 
 const App: React.FC = () => {
@@ -25,6 +26,7 @@ const App: React.FC = () => {
   const [data, setData] = useState({ num: 0 });
   return (
     <div style={{ padding: 30 }}>
+      {/* <Demo2/> */}
       <Demo/>
       {/* <Upload
         defaultFileList={[]}
